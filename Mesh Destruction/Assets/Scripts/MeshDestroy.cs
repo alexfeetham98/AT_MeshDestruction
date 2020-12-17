@@ -24,11 +24,11 @@ public class MeshDestroy : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            DestroyMesh();
+            //DestroyMesh();
         }
     }
 
-    private void DestroyMesh()
+    public void DestroyMesh()
     {
         var originalMesh = GetComponent<MeshFilter>().mesh;
         originalMesh.RecalculateBounds();
@@ -58,7 +58,7 @@ public class MeshDestroy : MonoBehaviour
                 var plane = new Plane(UnityEngine.Random.onUnitSphere, new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                                                                                    UnityEngine.Random.Range(bounds.min.y, bounds.max.y),
                                                                                    UnityEngine.Random.Range(bounds.min.z, bounds.max.z)));
-
+                
 
                 subParts.Add(GenerateMesh(parts[i], plane, true));
                 subParts.Add(GenerateMesh(parts[i], plane, false));
@@ -71,6 +71,7 @@ public class MeshDestroy : MonoBehaviour
         {
             parts[i].MakeGameobject(this);
             parts[i].GameObject.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
+            parts[i].GameObject.tag = "Destructible";
         }
 
         Destroy(gameObject);
