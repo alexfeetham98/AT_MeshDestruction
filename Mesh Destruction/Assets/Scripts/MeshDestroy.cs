@@ -17,6 +17,7 @@ public class MeshDestroy : MonoBehaviour
     {
         if (collision.gameObject.tag == "Projectile")
         {
+            Destroy(collision.gameObject, 0);
             DestroyMesh();
         }
     }
