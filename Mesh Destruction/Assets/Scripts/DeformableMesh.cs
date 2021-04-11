@@ -24,9 +24,13 @@ public class DeformableMesh : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.tag == "Projectile" /*|| collision.gameObject.tag == "Player"*/)
+		if (collision.gameObject.tag == "Projectile" || collision.gameObject.tag == "Tool" || collision.gameObject.tag == "Player")
 		{
-			Destroy(collision.gameObject);
+			if (collision.gameObject.tag == "Projectile")
+			{
+				Destroy(collision.gameObject);
+			}
+			
 			//Get point, impulse mag, and normal
 			Vector3 pt = transform.InverseTransformPoint(collision.GetContact(0).point);
 			Vector3 nrm = transform.InverseTransformDirection(collision.GetContact(0).normal);
