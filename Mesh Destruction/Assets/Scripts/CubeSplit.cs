@@ -21,6 +21,7 @@ public class CubeSplit : MonoBehaviour
         cubesPivotDistance = cubeSize * cubesInRow / 2;
         //use this value to create pivot vector
         cubesPivot = new Vector3(cubesPivotDistance, cubesPivotDistance, cubesPivotDistance);
+        explode();
     }
 
     void Update()

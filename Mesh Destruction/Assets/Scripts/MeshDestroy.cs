@@ -38,7 +38,10 @@ public class MeshDestroy : MonoBehaviour
             Bounds = originalMesh.bounds
         };
         for (int i = 0; i < originalMesh.subMeshCount; i++)
+        {
             mainPart.Triangles[i] = originalMesh.GetTriangles(i);
+        }
+            
 
         parts.Add(mainPart);
 
@@ -219,10 +222,7 @@ public class MeshDestroy : MonoBehaviour
         public GameObject GameObject;
         public Bounds Bounds = new Bounds();
 
-        public PartMesh()
-        {
-
-        }
+        public PartMesh() { }
 
         public void AddTriangle(int submesh, Vector3 vert1, Vector3 vert2, Vector3 vert3, Vector3 normal1, Vector3 normal2, Vector3 normal3, Vector2 uv1, Vector2 uv2, Vector2 uv3)
         {

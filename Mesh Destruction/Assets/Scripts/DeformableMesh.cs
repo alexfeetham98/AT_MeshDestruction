@@ -26,10 +26,7 @@ public class DeformableMesh : MonoBehaviour
 	{
 		if (collision.gameObject.tag == "Projectile" || collision.gameObject.tag == "Tool" || collision.gameObject.tag == "Player")
 		{
-			if (collision.gameObject.tag == "Projectile")
-			{
-				Destroy(collision.gameObject);
-			}
+			
 			
 			//Get point, impulse mag, and normal
 			Vector3 pt = transform.InverseTransformPoint(collision.GetContact(0).point);
@@ -58,6 +55,10 @@ public class DeformableMesh : MonoBehaviour
 			///Currently gets unity to recalc normals. Could be optimized and improved by doing it ourselves.
 			m.RecalculateNormals();
 			m.RecalculateBounds();
+		}
+		if (collision.gameObject.tag == "Projectile")
+		{
+			Destroy(collision.gameObject);
 		}
 	}
 
