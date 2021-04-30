@@ -14,7 +14,7 @@ public class ProjectileEmmitter : MonoBehaviour
             GameObject proj = Instantiate(projectile, transform.position, transform.rotation) as GameObject;
             Rigidbody projRB = proj.GetComponent<Rigidbody>();
             projRB.velocity = (transform.forward * speed);
-            Destroy(proj, 0.5f);
+            Destroy(proj, 1.0f);
         }
     }
 }

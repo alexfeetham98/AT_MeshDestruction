@@ -3,8 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class MeshDestroy : MonoBehaviour
 {
+    public enum Material
+    {
+        Wood,
+        Brick,
+        Tile,
+        Metal
+    };
+
+    public Material debrisMat;
+
     private bool edgeSet = false;
     private Vector3 edgeVertex = Vector3.zero;
     private Vector2 edgeUV = Vector2.zero;
@@ -17,7 +29,7 @@ public class MeshDestroy : MonoBehaviour
     {
         if (collision.gameObject.tag == "Projectile")
         {
-            Destroy(collision.gameObject, 0);
+            Destroy(collision.gameObject);
             DestroyMesh();
         }
     }
@@ -45,9 +57,10 @@ public class MeshDestroy : MonoBehaviour
 
         parts.Add(mainPart);
 
-        for (var c = 0; c < CutCascades; c++)
+        //Create Planes for cutting
+        for (int c = 0; c < CutCascades; c++)
         {
-            for (var i = 0; i < parts.Count; i++)
+            for (int i = 0; i < parts.Count; i++)
             {
                 var bounds = parts[i].Bounds;
                 bounds.Expand(0.5f);
@@ -64,7 +77,7 @@ public class MeshDestroy : MonoBehaviour
             subParts.Clear();
         }
 
-        for (var i = 0; i < parts.Count; i++)
+        for (int i = 0; i < parts.Count; i++)
         {
             parts[i].MakeGameobject(this);
             parts[i].GameObject.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
@@ -77,16 +90,16 @@ public class MeshDestroy : MonoBehaviour
     private PartMesh GenerateMesh(PartMesh original, Plane plane, bool left)
     {
         var partMesh = new PartMesh() { };
-        var ray1 = new Ray();
-        var ray2 = new Ray();
+        Ray ray1 = new Ray();
+        Ray ray2 = new Ray();
 
 
-        for (var i = 0; i < original.Triangles.Length; i++)
+        for (int i = 0; i < original.Triangles.Length; i++)
         {
             var triangles = original.Triangles[i];
             edgeSet = false;
 
-            for (var j = 0; j < triangles.Length; j = j + 3)
+            for (int j = 0; j < triangles.Length; j = j + 3)
             {
                 var sideA = plane.GetSide(original.Vertices[triangles[j]]) == left;
                 var sideB = plane.GetSide(original.Vertices[triangles[j + 1]]) == left;
@@ -101,8 +114,7 @@ public class MeshDestroy : MonoBehaviour
                 }
                 if (sideCount == 3)
                 {
-                    partMesh.AddTriangle(i,
-                                         original.Vertices[triangles[j]], original.Vertices[triangles[j + 1]], original.Vertices[triangles[j + 2]],
+                    partMesh.AddTriangle(i, original.Vertices[triangles[j]], original.Vertices[triangles[j + 1]], original.Vertices[triangles[j + 2]],
                                          original.Normals[triangles[j]], original.Normals[triangles[j + 1]], original.Normals[triangles[j + 2]],
                                          original.UV[triangles[j]], original.UV[triangles[j + 1]], original.UV[triangles[j + 2]]);
                     continue;

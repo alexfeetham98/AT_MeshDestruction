@@ -4,67 +4,94 @@ using UnityEngine;
 
 public class DeformableMesh : MonoBehaviour
 {
-    //Public
-	public float minImpulse = 1f;
 	public float malleability = 0.05f;
 	public float radius = 0.1f;
+	public int maxHits = 10;
+	public bool enableDebris = false;
+	public GameObject debrisBase;
+	public int material = 0;	
 
-	//Private
-	private Mesh m;
-	private MeshCollider mc;
-	private Vector3[] verts;
-	private Vector3[] iVerts;
+	private Mesh mesh;
+	private MeshCollider meshCollider;
+	private Shader shader;
+	private Vector3[] verticies;
+	private int hits = 0;
 
 	private void Start()
 	{
-		m = GetComponent<MeshFilter>().mesh;
-		mc = GetComponent<MeshCollider>();
-		iVerts = m.vertices;
+		mesh = GetComponent<MeshFilter>().mesh;
+		meshCollider = GetComponent<MeshCollider>();
+		shader = GetComponent<Shader>();
 	}
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.tag == "Projectile" || collision.gameObject.tag == "Tool" || collision.gameObject.tag == "Player")
+		if (collision.gameObject.tag == "Projectile" || collision.gameObject.tag == "Tool" )
 		{
-			
-			
-			//Get point, impulse mag, and normal
-			Vector3 pt = transform.InverseTransformPoint(collision.GetContact(0).point);
-			Vector3 nrm = transform.InverseTransformDirection(collision.GetContact(0).normal);
-			float imp = collision.impulse.magnitude;
-			if (imp < minImpulse)
-				return;
-
-			//Deform vertices
-			verts = m.vertices;
-			float scale; ///Declare outside of tight loop
-			for (int i = 0; i < verts.Length; i++)
+			if (hits < maxHits)
 			{
-				//Get deformation scale based on distance
-				scale = Mathf.Clamp(radius - (pt - verts[i]).magnitude, 0, radius);
+				//Get point, normal, and impulse
+				Vector3 point3 = transform.InverseTransformPoint(collision.GetContact(0).point);
+				Vector3 normal = transform.InverseTransformDirection(collision.GetContact(0).normal);
+				float impluse = collision.impulse.magnitude;
 
-				//Deform by impulse multiplied by scale and strength parameter
-				verts[i] += nrm * imp * scale * malleability;
+				//Deform vertices
+				verticies = mesh.vertices;
+				float scale;
+				for (int i = 0; i < verticies.Length; i++)
+				{
+					//Get deformation scale based on distance
+					scale = Mathf.Clamp(radius - (point3 - verticies[i]).magnitude, 0, radius);
+
+					//Deform by impulse multiplied by scale and strength parameter
+					verticies[i] += normal * impluse * scale * malleability;
+				}
+
+				//Apply changes to collider and mesh
+				mesh.vertices = verticies;
+				meshCollider.sharedMesh = mesh;
+
+				//Recalculate mesh normal and bounds - Unity functions
+				mesh.RecalculateNormals();
+				mesh.RecalculateBounds();
+
+				hits = hits + 1;
+
+				
+
+				if (collision.gameObject.tag == "Projectile")
+				{
+					Destroy(collision.gameObject);
+				}
+				
+				if (enableDebris)
+                {
+					GameObject debris = Instantiate(debrisBase, collision.transform.position, collision.transform.rotation) as GameObject;
+
+					switch(material)
+                    {
+						case 0:
+							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Wood;
+							debris.GetComponent<MeshDestroy>().CutCascades = 5;
+							break;
+						case 1:
+							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Brick;
+							debris.GetComponent<MeshDestroy>().CutCascades = 8;
+							break;
+						case 2:
+							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Tile;
+							debris.GetComponent<MeshDestroy>().CutCascades = 11;
+							break;
+						case 3:
+							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Metal;
+							break;
+					}
+					debris.GetComponent<Renderer>().material.shader = shader;
+					debris.GetComponent<MeshDestroy>().DestroyMesh();
+
+					Destroy(debris, 2);
+                }
 			}
-
-			//Apply changes to collider and mesh
-			m.vertices = verts;
-			mc.sharedMesh = m;
-
-			//Recalculate mesh stuff
-			///Currently gets unity to recalc normals. Could be optimized and improved by doing it ourselves.
-			m.RecalculateNormals();
-			m.RecalculateBounds();
-		}
-		if (collision.gameObject.tag == "Projectile")
-		{
-			Destroy(collision.gameObject);
-		}
-	}
-
-	private void OnApplicationQuit()
-	{
-		//Need to reset mesh after quit
-		m.vertices = iVerts;
+        }
 	}
 }
