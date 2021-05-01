@@ -67,7 +67,8 @@ public class MeshDestroy : MonoBehaviour
                 var plane = new Plane(UnityEngine.Random.onUnitSphere, new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                                                                                    UnityEngine.Random.Range(bounds.min.y, bounds.max.y),
                                                                                    UnityEngine.Random.Range(bounds.min.z, bounds.max.z)));
-                
+
+
                 subParts.Add(GenerateMesh(parts[i], plane, true));
                 subParts.Add(GenerateMesh(parts[i], plane, false));
             }
@@ -144,15 +145,15 @@ public class MeshDestroy : MonoBehaviour
                 if (sideCount == 1)
                 {
                     partMesh.AddTriangle(i,
-                                        original.Vertices[triangles[j + singleIndex]],
-                                        ray1.origin + ray1.direction.normalized * enter1,
-                                        ray2.origin + ray2.direction.normalized * enter2,
-                                        original.Normals[triangles[j + singleIndex]],
-                                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 2) % 3)]], lerp2),
-                                        original.UV[triangles[j + singleIndex]],
-                                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 2) % 3)]], lerp2));
+                        original.Vertices[triangles[j + singleIndex]],
+                        ray1.origin + ray1.direction.normalized * enter1,
+                        ray2.origin + ray2.direction.normalized * enter2,
+                        original.Normals[triangles[j + singleIndex]],
+                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 2) % 3)]], lerp2),
+                        original.UV[triangles[j + singleIndex]],
+                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 2) % 3)]], lerp2));
 
                     continue;
                 }
@@ -160,25 +161,26 @@ public class MeshDestroy : MonoBehaviour
                 if (sideCount == 2)
                 {
                     partMesh.AddTriangle(i,
-                                        ray1.origin + ray1.direction.normalized * enter1,
-                                        original.Vertices[triangles[j + ((singleIndex + 1) % 3)]],
-                                        original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
-                                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        original.Normals[triangles[j + ((singleIndex + 1) % 3)]],
-                                        original.Normals[triangles[j + ((singleIndex + 2) % 3)]],
-                                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        original.UV[triangles[j + ((singleIndex + 1) % 3)]],
-                                        original.UV[triangles[j + ((singleIndex + 2) % 3)]]);
+                        ray1.origin + ray1.direction.normalized * enter1,
+                        original.Vertices[triangles[j + ((singleIndex + 1) % 3)]],
+                        original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
+                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        original.Normals[triangles[j + ((singleIndex + 1) % 3)]],
+                        original.Normals[triangles[j + ((singleIndex + 2) % 3)]],
+                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        original.UV[triangles[j + ((singleIndex + 1) % 3)]],
+                        original.UV[triangles[j + ((singleIndex + 2) % 3)]]);
+
                     partMesh.AddTriangle(i,
-                                        ray1.origin + ray1.direction.normalized * enter1,
-                                        original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
-                                        ray2.origin + ray2.direction.normalized * enter2,
-                                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        original.Normals[triangles[j + ((singleIndex + 2) % 3)]],
-                                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 2) % 3)]], lerp2),
-                                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
-                                        original.UV[triangles[j + ((singleIndex + 2) % 3)]],
-                                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 2) % 3)]], lerp2));
+                        ray1.origin + ray1.direction.normalized * enter1,
+                        original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
+                        ray2.origin + ray2.direction.normalized * enter2,
+                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        original.Normals[triangles[j + ((singleIndex + 2) % 3)]],
+                        Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 2) % 3)]], lerp2),
+                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
+                        original.UV[triangles[j + ((singleIndex + 2) % 3)]],
+                        Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 2) % 3)]], lerp2));
                     continue;
                 }
             }

@@ -86,9 +86,20 @@ public class DeformableMesh : MonoBehaviour
 							break;
 					}
 					debris.GetComponent<Renderer>().material.shader = shader;
-					//debris.GetComponent<MeshDestroy>().DestroyMesh();
-					Thread destroyThread = new Thread(new ThreadStart(debris.GetComponent<MeshDestroy>().DestroyMesh));
-					destroyThread.Start();
+					debris.transform.localScale = new Vector3(radius * 2, radius * 2, radius);
+					
+
+                    debris.GetComponent<MeshDestroy>().DestroyMesh();
+
+
+
+                    //Thread destroyThread = new Thread(debris.GetComponent<MeshDestroy>().DestroyMesh);
+                    //lock (debris)
+                    //{
+                    //    destroyThread.Start();
+                    //}
+                    //while (destroyThread.IsAlive) { Debug.Log("Thread Running"); }
+
                 }
 			}
         }

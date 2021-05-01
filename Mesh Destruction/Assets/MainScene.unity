@@ -5209,7 +5209,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 230180096}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16, y: 1.474, z: -1}
+  m_LocalPosition: {x: -21, y: 1.474, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2066334899}
@@ -5306,7 +5306,6 @@ GameObject:
   m_Component:
   - component: {fileID: 358248648}
   - component: {fileID: 358248647}
-  - component: {fileID: 358248646}
   - component: {fileID: 358248645}
   m_Layer: 0
   m_Name: Camera
@@ -5346,14 +5345,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &358248646
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 358248644}
-  m_Enabled: 1
 --- !u!20 &358248647
 Camera:
   m_ObjectHideFlags: 0
@@ -6618,7 +6609,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1181879494}
   - component: {fileID: 1181879493}
-  - component: {fileID: 1181879492}
   - component: {fileID: 1181879491}
   m_Layer: 0
   m_Name: SkyCam
@@ -6658,14 +6648,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &1181879492
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1181879490}
-  m_Enabled: 1
 --- !u!20 &1181879493
 Camera:
   m_ObjectHideFlags: 0
@@ -7470,7 +7452,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1856146665}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1856146670
 Transform:
   m_ObjectHideFlags: 0
@@ -8019,6 +8001,8 @@ GameObject:
   - component: {fileID: 9186365628442843546}
   - component: {fileID: 2300790757996127628}
   - component: {fileID: 444212733169215062}
+  - component: {fileID: 2611263525424941671}
+  - component: {fileID: 2611263525424941670}
   - component: {fileID: 2611263525424941669}
   m_Layer: 0
   m_Name: pCube1
@@ -8040,8 +8024,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisMat: 0
-  CutCascades: 1
-  ExplodeForce: 0
+  CutCascades: 4
+  ExplodeForce: 1
+--- !u!54 &2611263525424941670
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611263525424941668}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &2611263525424941671
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611263525424941668}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4068373912626513877, guid: 255c7119029df4e4d8dc69e59dbfe1d2, type: 3}
 --- !u!1 &6219039685691066183
 GameObject:
   m_ObjectHideFlags: 0
