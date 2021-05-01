@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 
 public class DeformableMesh : MonoBehaviour
 {
@@ -57,8 +58,6 @@ public class DeformableMesh : MonoBehaviour
 
 				hits = hits + 1;
 
-				
-
 				if (collision.gameObject.tag == "Projectile")
 				{
 					Destroy(collision.gameObject);
@@ -72,24 +71,24 @@ public class DeformableMesh : MonoBehaviour
                     {
 						case 0:
 							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Wood;
-							debris.GetComponent<MeshDestroy>().CutCascades = 5;
+							debris.GetComponent<MeshDestroy>().CutCascades = 8;
 							break;
 						case 1:
 							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Brick;
-							debris.GetComponent<MeshDestroy>().CutCascades = 8;
+							debris.GetComponent<MeshDestroy>().CutCascades = 10;
 							break;
 						case 2:
 							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Tile;
-							debris.GetComponent<MeshDestroy>().CutCascades = 11;
+							debris.GetComponent<MeshDestroy>().CutCascades = 15;
 							break;
 						case 3:
 							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Metal;
 							break;
 					}
 					debris.GetComponent<Renderer>().material.shader = shader;
-					debris.GetComponent<MeshDestroy>().DestroyMesh();
-
-					Destroy(debris, 2);
+					//debris.GetComponent<MeshDestroy>().DestroyMesh();
+					Thread destroyThread = new Thread(new ThreadStart(debris.GetComponent<MeshDestroy>().DestroyMesh));
+					destroyThread.Start();
                 }
 			}
         }

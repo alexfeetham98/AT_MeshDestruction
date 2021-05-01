@@ -7911,7 +7911,7 @@ Transform:
   m_GameObject: {fileID: 6219039685691066183}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 42, y: 1, z: -40}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.175, y: 0.175, z: 0.175}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
@@ -8077,7 +8077,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debrisMat: 0
   CutCascades: 1
-  ExplodeForce: 0
+  ExplodeForce: 1
 --- !u!54 &6219039685691066185
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8090,7 +8090,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
