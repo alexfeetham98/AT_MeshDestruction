@@ -5,24 +5,34 @@ using System.Threading;
 
 public class DeformableMesh : MonoBehaviour
 {
+	[Range(0.0f,3)]
 	public float malleability = 0.05f;
+	[Range(0.0f,0.5f)]
 	public float radius = 0.1f;
+	[Range(0,15)]
 	public int maxHits = 10;
+	[Range(1,10)]
+	public int cutCascades = 5;
 	public bool enableDebris = false;
-	public GameObject debrisBase;
-	public int material = 0;	
+	
 
+
+	//Debris Components
+	private GameObject debrisBase;
 	private Mesh mesh;
 	private MeshCollider meshCollider;
-	private Shader shader;
+	private MeshRenderer meshRenderer;
+	//public int material = 0;	
+
 	private Vector3[] verticies;
 	private int hits = 0;
 
 	private void Start()
 	{
+		debrisBase = GameObject.Find("DebrisBase");
 		mesh = GetComponent<MeshFilter>().mesh;
 		meshCollider = GetComponent<MeshCollider>();
-		shader = GetComponent<Shader>();
+		meshRenderer = GetComponent<MeshRenderer>();
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -36,7 +46,6 @@ public class DeformableMesh : MonoBehaviour
 				Vector3 normal = transform.InverseTransformDirection(collision.GetContact(0).normal);
 				float impluse = collision.impulse.magnitude;
 
-				//Deform vertices
 				verticies = mesh.vertices;
 				float scale;
 				for (int i = 0; i < verticies.Length; i++)
@@ -44,7 +53,7 @@ public class DeformableMesh : MonoBehaviour
 					//Get deformation scale based on distance
 					scale = Mathf.Clamp(radius - (point3 - verticies[i]).magnitude, 0, radius);
 
-					//Deform by impulse multiplied by scale and strength parameter
+					//Deform the verticies based on the impluse, scale and malleability
 					verticies[i] += normal * impluse * scale * malleability;
 				}
 
@@ -65,33 +74,41 @@ public class DeformableMesh : MonoBehaviour
 				
 				if (enableDebris)
                 {
+					//Create new game object
 					GameObject debris = Instantiate(debrisBase, collision.transform.position, collision.transform.rotation) as GameObject;
 
-					switch(material)
-                    {
-						case 0:
-							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Wood;
-							debris.GetComponent<MeshDestroy>().CutCascades = 8;
-							break;
-						case 1:
-							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Brick;
-							debris.GetComponent<MeshDestroy>().CutCascades = 10;
-							break;
-						case 2:
-							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Tile;
-							debris.GetComponent<MeshDestroy>().CutCascades = 15;
-							break;
-						case 3:
-							debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Metal;
-							break;
-					}
-					debris.GetComponent<Renderer>().material.shader = shader;
-					debris.transform.localScale = new Vector3(radius * 2, radius * 2, radius);
-					
+                    #region Old Instantiation
+                    //switch(material)
+                    //{
+                    //	case 0:
+                    //		debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Wood;
+                    //		debris.GetComponent<MeshDestroy>().CutCascades = 8;
+                    //		break;
+                    //	case 1:
+                    //		debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Brick;
+                    //		debris.GetComponent<MeshDestroy>().CutCascades = 10;
+                    //		break;
+                    //	case 2:
+                    //		debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Tile;
 
-                    debris.GetComponent<MeshDestroy>().DestroyMesh();
+                    //		break;
+                    //	case 3:
+                    //		debris.GetComponent<MeshDestroy>().debrisMat = MeshDestroy.Material.Metal;
+                    //		break;
+                    //}
+                    #endregion
 
+                    debris.GetComponent<MeshDestroy>().CutCascades = cutCascades;					//Set the amount of slices for the debris chunk
+					debris.GetComponent<MeshRenderer>().material = meshRenderer.material;			//Set the material to match that of the object that was hit
+					debris.transform.localScale = new Vector3(radius * 2, radius * 2, radius);		//Set the scale of the debris object to match that of the hole created by the deform
+                    debris.GetComponent<MeshDestroy>().DestroyMesh();								//Slice the debris
 
+                    #region Threading
+
+					///Unity does not not allow you to edit anything to do with
+					///a game object in child threads.
+					///The intention would have been to calcute the mesh slicing
+					///on a child thread to reduce fps lag however its just not allowed.
 
                     //Thread destroyThread = new Thread(debris.GetComponent<MeshDestroy>().DestroyMesh);
                     //lock (debris)
@@ -99,9 +116,10 @@ public class DeformableMesh : MonoBehaviour
                     //    destroyThread.Start();
                     //}
                     //while (destroyThread.IsAlive) { Debug.Log("Thread Running"); }
+                    #endregion
 
                 }
-			}
+            }
         }
 	}
 }

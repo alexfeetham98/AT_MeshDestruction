@@ -6,15 +6,15 @@ using System.Threading;
 
 public class MeshDestroy : MonoBehaviour
 {
-    public enum Material
-    {
-        Wood,
-        Brick,
-        Tile,
-        Metal
-    };
+    //public enum Material
+    //{
+    //    Wood,
+    //    Brick,
+    //    Tile,
+    //    Metal
+    //};
 
-    public Material debrisMat;
+    //public Material debrisMat;
 
     private bool edgeSet = false;
     private Vector3 edgeVertex = Vector3.zero;
