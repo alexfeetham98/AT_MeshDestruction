@@ -1,21 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Threading;
+using UnityEngine;
 
 public class DeformableMesh : MonoBehaviour
 {
+	//Deform Properties
 	[Range(0.0f,3)]
 	public float malleability = 0.05f;
 	[Range(0.0f,0.5f)]
 	public float radius = 0.1f;
-	[Range(0,15)]
+	//Destroy Properties
+	[Range(0, 15)]
 	public int maxHits = 10;
-	[Range(1,10)]
-	public int cutCascades = 5;
+	[Range(1, 10)]
+	public int thisObjectCuts = 10;
+	[Range(0, 5)]
+	public int thisObjectExplosiveForce = 1;
+	//Debris Properties
 	public bool enableDebris = false;
-	
-
+	[Range(1,10)]
+	public int debrisCuts = 5;
+	[Range(0, 5)]
+	public int debrisExplosiveForce = 1;
+	public bool destroyDebrisAfterTime = true;
+	[Range(1, 10)]
+	public float time = 3.0f;
 
 	//Debris Components
 	private GameObject debrisBase;
@@ -29,10 +39,16 @@ public class DeformableMesh : MonoBehaviour
 
 	private void Start()
 	{
-		debrisBase = GameObject.Find("DebrisBase");
-		mesh = GetComponent<MeshFilter>().mesh;
-		meshCollider = GetComponent<MeshCollider>();
-		meshRenderer = GetComponent<MeshRenderer>();
+		if (enableDebris)
+		{
+			debrisBase = GameObject.Find("DebrisBase");
+			mesh = GetComponent<MeshFilter>().mesh;
+			meshCollider = GetComponent<MeshCollider>();
+			meshRenderer = GetComponent<MeshRenderer>();
+		}		
+		this.gameObject.AddComponent<MeshDestroy>();
+		this.gameObject.GetComponent<MeshDestroy>().NumCuts = thisObjectCuts;
+		this.gameObject.GetComponent<MeshDestroy>().ExplodeForce = thisObjectExplosiveForce;
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -65,8 +81,6 @@ public class DeformableMesh : MonoBehaviour
 				mesh.RecalculateNormals();
 				mesh.RecalculateBounds();
 
-				hits = hits + 1;
-
 				if (collision.gameObject.tag == "Projectile")
 				{
 					Destroy(collision.gameObject);
@@ -77,7 +91,7 @@ public class DeformableMesh : MonoBehaviour
 					//Create new game object
 					GameObject debris = Instantiate(debrisBase, collision.transform.position, collision.transform.rotation) as GameObject;
 
-                    #region Old Instantiation
+                    #region Old Property Setting
                     //switch(material)
                     //{
                     //	case 0:
@@ -98,12 +112,16 @@ public class DeformableMesh : MonoBehaviour
                     //}
                     #endregion
 
-                    debris.GetComponent<MeshDestroy>().CutCascades = cutCascades;					//Set the amount of slices for the debris chunk
-					debris.GetComponent<MeshRenderer>().material = meshRenderer.material;			//Set the material to match that of the object that was hit
-					debris.transform.localScale = new Vector3(radius * 2, radius * 2, radius);		//Set the scale of the debris object to match that of the hole created by the deform
+                    debris.GetComponent<MeshDestroy>().NumCuts = debrisCuts;						//Set the amount of slices for the debris chunk
+					debris.GetComponent<MeshRenderer>().material = meshRenderer.material;           //Set the material to match that of the object that was hit
+					debris.GetComponent<MeshDestroy>().ExplodeForce = debrisExplosiveForce;         //Set the scale of how much force to apply to the debris
+					debris.GetComponent<MeshDestroy>().destroyAfterTime = destroyDebrisAfterTime;   //Enable automatic destruction of debris
+					debris.GetComponent<MeshDestroy>().time = time;                                 //Set the time after which the debris will auto destroy itself
+					debris.GetComponent<MeshDestroy>().canBreakChildObjs = false;					//Don't want to be able to break the debris by shooting it
+					debris.transform.localScale = new Vector3(radius * 2, radius * 2, radius);      //Set the scale of the debris object to match that of the hole created by the deform
                     debris.GetComponent<MeshDestroy>().DestroyMesh();								//Slice the debris
 
-                    #region Threading
+                    #region Threading Leftovers
 
 					///Unity does not not allow you to edit anything to do with
 					///a game object in child threads.
@@ -120,6 +138,14 @@ public class DeformableMesh : MonoBehaviour
 
                 }
             }
+			else if (hits > maxHits)
+            {
+				this.gameObject.GetComponent<MeshDestroy>().destroyAfterTime = true;
+				this.gameObject.GetComponent<MeshDestroy>().time = 10.0f;
+				this.gameObject.GetComponent<MeshDestroy>().canBreakChildObjs = false;
+				this.gameObject.GetComponent<MeshDestroy>().DestroyMesh();
+            }
+			hits++;
         }
 	}
 }

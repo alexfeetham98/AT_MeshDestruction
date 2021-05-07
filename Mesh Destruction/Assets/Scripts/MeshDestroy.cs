@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
+
 
 public class MeshDestroy : MonoBehaviour
 {
@@ -21,12 +22,18 @@ public class MeshDestroy : MonoBehaviour
     private Vector2 edgeUV = Vector2.zero;
     private Plane edgePlane = new Plane();
 
-    public int CutCascades = 1;
-    public float ExplodeForce = 0;
+    [Range(0,10)]
+    public int NumCuts = 1;
+    [Range(0,5)]
+    public float ExplodeForce = 1;
+    public bool canBreakChildObjs = true;
+    public bool destroyAfterTime = false;
+    [Range(1, 10)]
+    public float time = 5.0f;
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Projectile")
+        if (collision.gameObject.tag == "Projectile" && this.gameObject.tag != "Wall")
         {
             Destroy(collision.gameObject);
             DestroyMesh();
@@ -52,23 +59,20 @@ public class MeshDestroy : MonoBehaviour
         {
             mainPart.Triangles[i] = originalMesh.GetTriangles(i);
         }
-            
 
         parts.Add(mainPart);
 
         //Create Planes for cutting
-        for (int c = 0; c < CutCascades; c++)
+        for (int c = 0; c < NumCuts; c++)
         {
             for (int i = 0; i < parts.Count; i++)
             {
-                var bounds = parts[i].Bounds;
-                bounds.Expand(0.5f);
+                Bounds bounds = parts[i].Bounds;
 
-                var plane = new Plane(UnityEngine.Random.onUnitSphere, new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+                Plane plane = new Plane(UnityEngine.Random.onUnitSphere, new Vector3(UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                                                                                    UnityEngine.Random.Range(bounds.min.y, bounds.max.y),
                                                                                    UnityEngine.Random.Range(bounds.min.z, bounds.max.z)));
-
-
+                
                 subParts.Add(GenerateMesh(parts[i], plane, true));
                 subParts.Add(GenerateMesh(parts[i], plane, false));
             }
@@ -78,7 +82,7 @@ public class MeshDestroy : MonoBehaviour
 
         for (int i = 0; i < parts.Count; i++)
         {
-            parts[i].MakeGameobject(this);
+            parts[i].MakeGameObject(this, canBreakChildObjs, destroyAfterTime, time);
             parts[i].chunk.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
             parts[i].chunk.tag = "Destructible";
         }
@@ -118,25 +122,26 @@ public class MeshDestroy : MonoBehaviour
                     continue;
                 }
 
-                //cut points
+                //Cut points
                 var singleIndex = sideB == sideC ? 0 : sideA == sideC ? 1 : 2;
 
+                //Rays used to find intersct points
+                //Both cast to the same location
+                //Ray 1 used to connect the left side
                 ray1.origin = original.Vertices[triangles[j + singleIndex]];
                 var dir1 = original.Vertices[triangles[j + ((singleIndex + 1) % 3)]] - original.Vertices[triangles[j + singleIndex]];
                 ray1.direction = dir1;
                 plane.Raycast(ray1, out var enter1);
                 var lerp1 = enter1 / dir1.magnitude;
 
+                //Ray 2 used to connect the right side
                 ray2.origin = original.Vertices[triangles[j + singleIndex]];
                 var dir2 = original.Vertices[triangles[j + ((singleIndex + 2) % 3)]] - original.Vertices[triangles[j + singleIndex]];
                 ray2.direction = dir2;
                 plane.Raycast(ray2, out var enter2);
                 var lerp2 = enter2 / dir2.magnitude;
 
-                //first vertex = ancor
-                AddEdge(i,
-                        partMesh,
-                        left ? plane.normal * -1f : plane.normal,
+                AddEdge(i, partMesh, left ? plane.normal * -1f : plane.normal,
                         ray1.origin + ray1.direction.normalized * enter1,
                         ray2.origin + ray2.direction.normalized * enter2,
                         Vector2.Lerp(original.UV[triangles[j + singleIndex]], original.UV[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
@@ -144,8 +149,7 @@ public class MeshDestroy : MonoBehaviour
 
                 if (sideCount == 1)
                 {
-                    partMesh.AddTriangle(i,
-                        original.Vertices[triangles[j + singleIndex]],
+                    partMesh.AddTriangle(i, original.Vertices[triangles[j + singleIndex]],
                         ray1.origin + ray1.direction.normalized * enter1,
                         ray2.origin + ray2.direction.normalized * enter2,
                         original.Normals[triangles[j + singleIndex]],
@@ -160,8 +164,7 @@ public class MeshDestroy : MonoBehaviour
 
                 if (sideCount == 2)
                 {
-                    partMesh.AddTriangle(i,
-                        ray1.origin + ray1.direction.normalized * enter1,
+                    partMesh.AddTriangle(i, ray1.origin + ray1.direction.normalized * enter1,
                         original.Vertices[triangles[j + ((singleIndex + 1) % 3)]],
                         original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
                         Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
@@ -171,8 +174,7 @@ public class MeshDestroy : MonoBehaviour
                         original.UV[triangles[j + ((singleIndex + 1) % 3)]],
                         original.UV[triangles[j + ((singleIndex + 2) % 3)]]);
 
-                    partMesh.AddTriangle(i,
-                        ray1.origin + ray1.direction.normalized * enter1,
+                    partMesh.AddTriangle(i, ray1.origin + ray1.direction.normalized * enter1,
                         original.Vertices[triangles[j + ((singleIndex + 2) % 3)]],
                         ray2.origin + ray2.direction.normalized * enter2,
                         Vector3.Lerp(original.Normals[triangles[j + singleIndex]], original.Normals[triangles[j + ((singleIndex + 1) % 3)]], lerp1),
@@ -228,8 +230,10 @@ public class MeshDestroy : MonoBehaviour
         public void AddTriangle(int submesh, Vector3 vert1, Vector3 vert2, Vector3 vert3, Vector3 normal1, Vector3 normal2, Vector3 normal3, Vector2 uv1, Vector2 uv2, Vector2 uv3)
         {
             if (_Triangles.Count - 1 < submesh)
+            {
                 _Triangles.Add(new List<int>());
-            
+            }
+
             _Triangles[submesh].Add(_Verticies.Count);
             _Verticies.Add(vert1);
             _Triangles[submesh].Add(_Verticies.Count);
@@ -258,10 +262,12 @@ public class MeshDestroy : MonoBehaviour
             UV = _UVs.ToArray();
             Triangles = new int[_Triangles.Count][];
             for (var i = 0; i < _Triangles.Count; i++)
+            {
                 Triangles[i] = _Triangles[i].ToArray();
+            }
         }
 
-        public void MakeGameobject(MeshDestroy original)
+        public void MakeGameObject(MeshDestroy original, bool canBreakChildObjs, bool destroyAfterTime, float time)
         {
             chunk = new GameObject(original.name);
             chunk.transform.position = original.transform.position;
@@ -291,11 +297,18 @@ public class MeshDestroy : MonoBehaviour
             meshCollider.convex = true;
 
             Rigidbody rigidbody = chunk.AddComponent<Rigidbody>();
-            MeshDestroy meshDestroy = chunk.AddComponent<MeshDestroy>();
-            meshDestroy.CutCascades = original.CutCascades;
-            meshDestroy.ExplodeForce = original.ExplodeForce;
 
-            Destroy(chunk, 3);
+            if (canBreakChildObjs)
+            {
+                MeshDestroy meshDestroy = chunk.AddComponent<MeshDestroy>();
+                meshDestroy.NumCuts = original.NumCuts;
+                meshDestroy.ExplodeForce = original.ExplodeForce;
+            }
+
+            if (destroyAfterTime)
+            {
+                Destroy(chunk, time);
+            }
         }
     }
 }

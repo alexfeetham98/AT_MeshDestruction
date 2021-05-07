@@ -2,11 +2,10 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - CharacterController
-    - CubeSplit
     - DeformableMesh
+    - MeshDestroy
     - MouseCamLook
     - ProjectileEmmitter
-    - Weapon
     Unity.RenderPipelines.Core.Runtime.dll:
     - UnityEngine.Rendering.UI.DebugUIHandlerBitField
     - UnityEngine.Rendering.UI.DebugUIHandlerButton
@@ -43,6 +42,9 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
+    Unity.ShaderGraph.Editor.dll:
+    - UnityEditor.Graphing.GraphObject
+    - UnityEditor.ShaderGraph.Drawing.MaterialGraphEditWindow
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -100,95 +102,95 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11348}
-    - Class: 114
-      Script: {instanceID: 11350}
-    - Class: 114
-      Script: {instanceID: 11352}
-    - Class: 114
-      Script: {instanceID: 11354}
-    - Class: 114
-      Script: {instanceID: 11356}
-    - Class: 114
       Script: {instanceID: 11358}
     - Class: 114
       Script: {instanceID: 11360}
     - Class: 114
-      Script: {instanceID: 11490}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11498}
+      Script: {instanceID: 11364}
     - Class: 114
-      Script: {instanceID: 11600}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11620}
+      Script: {instanceID: 11368}
     - Class: 114
-      Script: {instanceID: 11786}
+      Script: {instanceID: 11370}
     - Class: 114
-      Script: {instanceID: 11824}
+      Script: {instanceID: 11548}
     - Class: 114
-      Script: {instanceID: 11982}
+      Script: {instanceID: 11670}
     - Class: 114
-      Script: {instanceID: 12052}
+      Script: {instanceID: 11696}
     - Class: 114
-      Script: {instanceID: 12272}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 12316}
+      Script: {instanceID: 11942}
     - Class: 114
-      Script: {instanceID: 12374}
+      Script: {instanceID: 12132}
     - Class: 114
-      Script: {instanceID: 12594}
+      Script: {instanceID: 12212}
     - Class: 114
-      Script: {instanceID: 12792}
+      Script: {instanceID: 12480}
     - Class: 114
-      Script: {instanceID: 12832}
+      Script: {instanceID: 12536}
     - Class: 114
-      Script: {instanceID: 12888}
+      Script: {instanceID: 12612}
     - Class: 114
-      Script: {instanceID: 12982}
+      Script: {instanceID: 12886}
     - Class: 114
-      Script: {instanceID: 13236}
+      Script: {instanceID: 13120}
     - Class: 114
-      Script: {instanceID: 13262}
+      Script: {instanceID: 13168}
     - Class: 114
-      Script: {instanceID: 13370}
+      Script: {instanceID: 13234}
     - Class: 114
-      Script: {instanceID: 13530}
+      Script: {instanceID: 13282}
     - Class: 114
-      Script: {instanceID: 13590}
+      Script: {instanceID: 13360}
     - Class: 114
-      Script: {instanceID: 13610}
+      Script: {instanceID: 13680}
     - Class: 114
-      Script: {instanceID: 13730}
+      Script: {instanceID: 13708}
     - Class: 114
-      Script: {instanceID: 13758}
+      Script: {instanceID: 13836}
     - Class: 114
-      Script: {instanceID: 13766}
+      Script: {instanceID: 14032}
     - Class: 114
-      Script: {instanceID: 14058}
+      Script: {instanceID: 14102}
     - Class: 114
-      Script: {instanceID: 14122}
+      Script: {instanceID: 14124}
     - Class: 114
-      Script: {instanceID: 14132}
+      Script: {instanceID: 14268}
     - Class: 114
-      Script: {instanceID: 14348}
+      Script: {instanceID: 14306}
     - Class: 114
-      Script: {instanceID: 14394}
+      Script: {instanceID: 14316}
     - Class: 114
-      Script: {instanceID: 14528}
+      Script: {instanceID: 14660}
     - Class: 114
-      Script: {instanceID: 14556}
+      Script: {instanceID: 14738}
     - Class: 114
-      Script: {instanceID: 14572}
+      Script: {instanceID: 14752}
     - Class: 114
-      Script: {instanceID: 14762}
+      Script: {instanceID: 15004}
     - Class: 114
-      Script: {instanceID: 14764}
+      Script: {instanceID: 15054}
     - Class: 114
-      Script: {instanceID: 14812}
+      Script: {instanceID: 15208}
     - Class: 114
-      Script: {instanceID: 14922}
+      Script: {instanceID: 15238}
     - Class: 114
-      Script: {instanceID: 14928}
+      Script: {instanceID: 15254}
+    - Class: 114
+      Script: {instanceID: 15480}
+    - Class: 114
+      Script: {instanceID: 15486}
+    - Class: 114
+      Script: {instanceID: 15546}
+    - Class: 114
+      Script: {instanceID: 15670}
+    - Class: 114
+      Script: {instanceID: 15678}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -574,7 +576,7 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
-      Hash: 44c099c361d5d6bb493250c1180c3c36
+      Hash: 5d34bc81a53e0217e70dccd706d9814c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MeshDestroy
@@ -856,7 +858,7 @@ ScriptsOnlyBuild:
     className: DebugUIHandlerUIntField
   - hash:
       serializedVersion: 2
-      Hash: 007a862fac3bd9e77bcfcb7efa50abd6
+      Hash: 4889b21011aab614d27e4a95d1762d96
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: DeformableMesh
@@ -868,10 +870,22 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MultiThreadedMeshDestroy
+  - hash:
+      serializedVersion: 2
       Hash: c5bfd0f6f4664318b8b9f50d88408421
     assemblyName: Unity.RenderPipelines.Universal.Runtime.dll
     namespaceName: UnityEngine.Rendering.Universal
     className: DepthOfField
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Unity.PerformanceTesting.dll
+    namespaceName: Unity.PerformanceTesting.Measurements
+    className: ProfilerMarkerMeasurement
   - hash:
       serializedVersion: 2
       Hash: 2cfa0393b5123bd14aa7b550fd8912e4
