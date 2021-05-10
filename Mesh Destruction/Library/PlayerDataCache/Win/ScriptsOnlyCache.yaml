@@ -43,7 +43,6 @@ ScriptsOnlyBuild:
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.ShaderGraph.Editor.dll:
-    - UnityEditor.Graphing.GraphObject
     - UnityEditor.ShaderGraph.Drawing.MaterialGraphEditWindow
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
